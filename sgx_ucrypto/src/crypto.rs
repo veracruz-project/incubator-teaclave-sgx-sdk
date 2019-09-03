@@ -960,7 +960,7 @@ where
     }
 }
 
-fn rsgx_cmac128_init(key: &sgx_cmac_128bit_key_t, cmac_handle: &mut sgx_cmac_state_handle_t) -> sgx_status_t {
+pub fn rsgx_cmac128_init(key: &sgx_cmac_128bit_key_t, cmac_handle: &mut sgx_cmac_state_handle_t) -> sgx_status_t {
     unsafe {
         sgx_cmac128_init(
             key as *const sgx_cmac_128bit_key_t,
@@ -969,10 +969,8 @@ fn rsgx_cmac128_init(key: &sgx_cmac_128bit_key_t, cmac_handle: &mut sgx_cmac_sta
     }
 }
 
-fn rsgx_cmac128_update_msg<T>(src: &T, cmac_handle: sgx_cmac_state_handle_t) -> sgx_status_t
-where
-    T: Copy + ContiguousMemory,
-{
+pub fn rsgx_cmac128_update_msg<T>(src: &T, cmac_handle: sgx_cmac_state_handle_t) -> sgx_status_t
+    where T: Copy + ContiguousMemory {
     let size = mem::size_of::<T>();
     if size == 0 {
         return sgx_status_t::SGX_ERROR_INVALID_PARAMETER;
@@ -1001,11 +999,11 @@ where
     }
 }
 
-fn rsgx_cmac128_final(cmac_handle: sgx_cmac_state_handle_t, hash: &mut sgx_cmac_128bit_tag_t) -> sgx_status_t {
-    unsafe { sgx_cmac128_final(cmac_handle, hash as *mut sgx_cmac_128bit_tag_t) }
+pub fn rsgx_cmac128_final(cmac_handle: sgx_cmac_state_handle_t, hash: &mut sgx_cmac_128bit_tag_t) -> sgx_status_t {
+    unsafe { sgx_cmac128_final(cmac_handle, hash as * mut sgx_cmac_128bit_tag_t) }
 }
 
-fn rsgx_cmac128_close(cmac_handle: sgx_cmac_state_handle_t) -> sgx_status_t {
+pub fn rsgx_cmac128_close(cmac_handle: sgx_cmac_state_handle_t) -> sgx_status_t {
     unsafe { sgx_cmac128_close(cmac_handle) }
 }
 
