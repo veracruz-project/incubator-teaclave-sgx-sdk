@@ -27,7 +27,6 @@
 
 use error;
 
-
 /// A secure random number generator.
 pub trait SecureRandom: private::Sealed {
     /// Fills `dest` with random bytes.
@@ -99,8 +98,12 @@ impl private::Sealed for SystemRandom {}
 #[cfg(not(any(target_os = "linux",
               target_os = "macos",
               target_os = "ios",
+              target_os = "optee",
               windows)))]
 use self::urandom::fill as fill_impl;
+
+#[cfg(target_os = "optee")]
+use self::gp_tee::fill as fill_impl;
 
 #[cfg(any(all(target_os = "linux", not(feature = "dev_urandom_fallback")),
           windows))]
@@ -116,6 +119,7 @@ use private;
 #[cfg(target_os = "linux")]
 mod sysrand_chunk {
     use error;
+    #[cfg(not(target_arch="aarch64"))]
     use sgx_rand::*;
 
     //extern {
@@ -124,24 +128,50 @@ mod sysrand_chunk {
 
     #[inline]
     pub fn chunk(dest: &mut [u8]) -> Result<usize, error::Unspecified> {
-        let mut os_rng = os::SgxRng::new().unwrap();
-        os_rng.fill_bytes(dest);
-        Ok(dest.len())
-        //let chunk_len: c::size_t = dest.len();
-        //let flags: c::uint = 0;
-        //let r = unsafe {
-        //    libc::syscall(GFp_SYS_GETRANDOM, dest.as_mut_ptr(), chunk_len, flags)
-        //};
-        //if r < 0 {
-        //    if unsafe { *libc::__errno_location() } == libc::EINTR {
-        //        // If an interrupt occurs while getrandom() is blocking to wait
-        //        // for the entropy pool, then EINTR is returned. Returning 0
-        //        // will cause the caller to try again.
-        //        return Ok(0);
-        //    }
-        //    return Err(error::Unspecified);
-        //}
-        //Ok(r as usize)
+        #[cfg(target_arch="x86_64")]
+        {
+            let mut os_rng = os::SgxRng::new().unwrap();
+            os_rng.fill_bytes(dest);
+            Ok(dest.len())
+        }
+
+        
+        #[cfg(not(target_arch="x86_64"))]
+        {
+            use c;
+            use libc;
+
+            // See `SYS_getrandom` in #include <sys/syscall.h>.
+
+            #[cfg(target_arch = "aarch64")]
+            const SYS_GETRANDOM: libc::c_long = 278;
+
+            #[cfg(target_arch = "arm")]
+            const SYS_GETRANDOM: libc::c_long = 384;
+
+            #[cfg(target_arch = "x86")]
+            const SYS_GETRANDOM: libc::c_long = 355;
+
+            #[cfg(target_arch = "x86_64")]
+            const SYS_GETRANDOM: libc::c_long = 318;
+
+            let chunk_len: c::size_t = dest.len();
+            let flags: c::uint = 0;
+            let r = unsafe {
+                libc::syscall(SYS_GETRANDOM, dest.as_mut_ptr(), chunk_len, flags)
+                //libc::syscall(GFp_SYS_GETRANDOM, dest.as_mut_ptr(), chunk_len, flags)
+            };
+            if r < 0 {
+                if unsafe { *libc::__errno_location() } == libc::EINTR {
+                    // If an interrupt occurs while getrandom() is blocking to wait
+                    // for the entropy pool, then EINTR is returned. Returning 0
+                    // will cause the caller to try again.
+                    return Ok(0);
+                }
+                return Err(error::Unspecified);
+            }
+            Ok(r as usize)
+        }
     }
 }
 
@@ -192,12 +222,13 @@ mod sysrand {
 
 // Keep the `cfg` conditions in sync with the conditions in lib.rs.
 #[cfg(all(any(target_os = "redox", unix),
-          not(any(target_os = "macos", target_os = "ios")),
+          not(any(target_os = "macos", target_os = "ios", target_os = "optee")),
           not(all(target_os = "linux",
                   not(feature = "dev_urandom_fallback")))))]
 mod urandom {
 //    use std;
     use error;
+    #[cfg(not(target_arch="aarch64"))]
     use sgx_rand::*;
 
     pub fn fill(dest: &mut [u8]) -> Result<(), error::Unspecified> {
@@ -218,8 +249,11 @@ mod urandom {
 //            },
 //            Err(_) => Err(error::Unspecified),
 //        }
-        let mut os_rng = os::SgxRng::new().unwrap();
-        os_rng.fill_bytes(dest);
+        #[cfg(target_arch = "x86_64")]
+        {
+            let mut os_rng = os::SgxRng::new().unwrap();
+            os_rng.fill_bytes(dest);
+        }
 
         Ok(())
     }
@@ -312,5 +346,14 @@ mod tests {
                 assert!(buf.iter().any(|x| *x != 0));
             }
         }
+    }
+}
+
+#[cfg(target_os = "optee")]
+mod gp_tee {
+    use crate::error;
+    pub fn fill(dest: &mut [u8]) -> Result<(), error::Unspecified> {
+        optee_utee::Random::generate(dest);
+        Ok(())
     }
 }

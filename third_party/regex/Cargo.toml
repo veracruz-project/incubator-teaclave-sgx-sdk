@@ -36,7 +36,7 @@ regex-syntax = { path = "regex-syntax", version = "0.6.2" }
 # For compiling UTF-8 decoding into automata.
 utf8-ranges = { path = "../utf8-ranges" }
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx") not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }
 
 [dev-dependencies]

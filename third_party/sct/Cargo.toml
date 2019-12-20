@@ -9,7 +9,7 @@ homepage = "https://github.com/ctz/sct.rs"
 repository = "https://github.com/ctz/sct.rs"
 categories = ["network-programming", "cryptography"]
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"), not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }
 
 [dependencies]

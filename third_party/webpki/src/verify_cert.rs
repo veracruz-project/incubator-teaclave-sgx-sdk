@@ -135,7 +135,7 @@ fn check_signatures(supported_sig_algs: &[&SignatureAlgorithm],
 }
 
 fn check_issuer_independent_properties<'a>(
-        cert: &Cert<'a>, time: time::Time, used_as_ca: UsedAsCA,
+        cert: &Cert<'a>, _time: time::Time, used_as_ca: UsedAsCA,
         sub_ca_count: usize, required_eku_if_present: KeyPurposeId)
         -> Result<(), Error> {
     // TODO: check_distrust(trust_anchor_subject, trust_anchor_spki)?;
@@ -146,7 +146,10 @@ fn check_issuer_independent_properties<'a>(
     // See the comment in `remember_extension` for why we don't check the
     // KeyUsage extension.
 
-    cert.validity.read_all(Error::BadDER, |value| check_validity(value, time))?;
+    // for certain platforms, we don't have a system time, so don't check validity.
+    // I know this is bad. I'll try to do better
+    #[cfg(target_os = "linux")]
+    cert.validity.read_all(Error::BadDER, |value| check_validity(value, _time))?;
     untrusted::read_all_optional(
         cert.basic_constraints, Error::BadDER,
         |value| check_basic_constraints(value, used_as_ca, sub_ca_count))?;
@@ -158,6 +161,7 @@ fn check_issuer_independent_properties<'a>(
 }
 
 // https://tools.ietf.org/html/rfc5280#section-4.1.2.5
+#[cfg(target_os = "linux")]
 fn check_validity(input: &mut untrusted::Reader, time: time::Time)
                   -> Result<(), Error> {
     let not_before = der::time_choice(input)?;

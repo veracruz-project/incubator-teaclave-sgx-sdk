@@ -14,7 +14,6 @@
 
 //! Error reporting.
 
-use core;
 use untrusted;
 
 #[cfg(feature = "use_heap")]

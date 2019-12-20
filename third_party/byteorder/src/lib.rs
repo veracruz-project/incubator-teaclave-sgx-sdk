@@ -37,16 +37,16 @@ assert_eq!(wtr, vec![5, 2, 0, 3]);
 */
 
 #![deny(missing_docs)]
-#![cfg_attr(not(all(target_env = "sgx", feature = "std")), no_std)]
+#![cfg_attr(all(not(all(target_env = "sgx", feature = "std")), not(target_arch="aarch64")), no_std)]
 #![cfg_attr(all(target_env = "sgx", feature = "std"), feature(rustc_private))]
 #![cfg_attr(feature = "i128", feature(i128_type))]
 #![cfg_attr(all(feature = "i128", test), feature(i128))]
 #![doc(html_root_url = "https://docs.rs/byteorder/1.2.1")]
 
-#[cfg(all(not(target_env = "sgx"), feature = "std"))]
+#[cfg(all(not(target_env = "sgx"), feature = "std", not(target_arch = "aarch64")))]
 extern crate sgx_tstd as std;
 
-#[cfg(all(target_env = "sgx", feature = "std"))]
+//#[cfg(all(target_env = "sgx", feature = "std"))]
 extern crate core;
 
 use core::fmt::Debug;

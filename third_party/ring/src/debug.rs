@@ -16,9 +16,9 @@
 // Debug implementation for a given field.
 macro_rules! derive_debug_from_field {
     ($typename:ty, $fieldname:ident) => {
-        impl ::core::fmt::Debug for $typename {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> Result<(), ::core::fmt::Error> {
-                ::core::fmt::Debug::fmt(&self.$fieldname, f)
+        impl core::fmt::Debug for $typename {
+            fn fmt(&self, f: &mut core::fmt::Formatter) -> Result<(), core::fmt::Error> {
+                core::fmt::Debug::fmt(&self.$fieldname, f)
             }
         }
     };

@@ -16,7 +16,6 @@
 // TODO: enforce maximum input length.
 
 use {c, chacha, constant_time, error, polyfill};
-use core;
 
 impl SigningContext {
     #[inline]

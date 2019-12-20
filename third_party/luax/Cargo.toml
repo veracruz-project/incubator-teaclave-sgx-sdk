@@ -12,5 +12,5 @@ serde = { version = "1", path = "../serde-rs/serde/serde" }
 serde_derive = { version = "1", path = "../serde-rs/serde/serde_derive" }
 serde_json = { version = "1", path = "../serde-rs/json" }
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx") not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path = "../../sgx_tstd" }

@@ -37,7 +37,7 @@ iovec = { path = "../iovec" }
 #net2     = "0.2.29"
 #iovec    = "0.1.1"
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx") not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd", features = ["net"]}
 sgx_libc = { path =  "../../sgx_libc" }
 

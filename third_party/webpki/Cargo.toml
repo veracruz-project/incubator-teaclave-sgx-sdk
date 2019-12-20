@@ -62,12 +62,15 @@ default = ["std", "trust_anchor_util"]
 trust_anchor_util = ["std"]
 std = []
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"), not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }
 
 [dependencies]
 ring = { path = "../ring" }
 untrusted = "0.6.2"
+
+[target.'cfg(target_os="optee")'.dependencies]
+optee-utee = { path = "/work/rust-optee-trustzone-sdk/optee-utee" }
 
 [dev-dependencies]
 base64 = "0.9.1"

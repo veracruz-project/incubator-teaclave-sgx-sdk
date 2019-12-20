@@ -1,10 +1,13 @@
 use std::prelude::v1::*;
-use std::untrusted::time::SystemTimeEx;
+//use std::untrusted::time::SystemTimeEx;
 use server::ProducesTickets;
 use rand;
 
 use std::mem;
+#[cfg(target_arch="x86_64")]
 use std::sync::{SgxMutex, Arc};
+#[cfg(target_arch="aarch64")]
+use std::sync::{Mutex, Arc};
 use std::time;
 use ring::aead;
 
@@ -115,7 +118,11 @@ struct TicketSwitcherState {
 pub struct TicketSwitcher {
     generator: fn() -> Box<ProducesTickets>,
     lifetime: u32,
-    state: SgxMutex<TicketSwitcherState>,
+    #[cfg(target_arch="x86_64")]
+    state: std::sync::SgxMutex<TicketSwitcherState>,
+    #[cfg(target_arch="aarch64")]
+    state: Mutex<TicketSwitcherState>,
+
 }
 
 impl TicketSwitcher {
@@ -129,7 +136,14 @@ impl TicketSwitcher {
         TicketSwitcher {
             generator,
             lifetime,
-            state: SgxMutex::new(TicketSwitcherState {
+            #[cfg(target_arch="x86_64")]
+            state: std::sync::SgxMutex::new(TicketSwitcherState {
+                current: generator(),
+                previous: None,
+                next_switch_time: timebase() + u64::from(lifetime),
+            }),
+            #[cfg(target_arch="aarch64")]
+            state: Mutex::new(TicketSwitcherState {
                 current: generator(),
                 previous: None,
                 next_switch_time: timebase() + u64::from(lifetime),

@@ -23,9 +23,8 @@
 // things that way, we'd have a hard dependency on `malloc` and other overhead.
 // The goal for this implementation is to drive the overhead as close to zero
 // as possible.
-
+extern crate core;
 use {c, init, polyfill};
-use core;
 
 // XXX: Replace with `const fn` when `const fn` is stable:
 // https://github.com/rust-lang/rust/issues/24111

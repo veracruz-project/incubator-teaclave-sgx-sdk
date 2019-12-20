@@ -188,13 +188,12 @@
         trivial_numeric_casts,
         missing_docs,
         unused_import_braces,
-        unused_extern_crates,
         unused_qualifications)]
 #![allow(deprecated)]
 #![crate_name = "rustls"]
 #![crate_type = "rlib"]
 
-#![cfg_attr(not(target_env = "sgx"), no_std)]
+#![cfg_attr(all(not(target_arch="aarch64"), not(target_env = "sgx")), no_std)]
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
 
 #![feature(slice_concat_ext)]
@@ -207,7 +206,7 @@
 //   underneath.
 #![cfg_attr(feature = "cargo-clippy", allow(ptr_arg))]
 
-#[cfg(not(target_env = "sgx"))]
+#[cfg(all(not(target_arch="aarch64"), not(target_env = "sgx")))]
 #[macro_use]
 extern crate sgx_tstd as std;
 
@@ -227,6 +226,9 @@ extern crate sct;
 
 // rust-base64 for pemfile module.
 extern crate base64;
+
+#[cfg(taret_os="optee")]
+extern crate optee_utee;
 
 // log for logging (optional).
 #[cfg(feature = "logging")]

@@ -106,6 +106,7 @@ pub fn small_nonnegative_integer<'a>(input: &'a mut untrusted::Reader)
 }
 
 
+#[allow(dead_code)]
 pub fn time_choice<'a>(input: &mut untrusted::Reader<'a>)
                        -> Result<time::Time, Error> {
     let is_utc_time = input.peek(Tag::UTCTime as u8);

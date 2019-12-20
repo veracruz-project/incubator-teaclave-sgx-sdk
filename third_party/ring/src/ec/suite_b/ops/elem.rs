@@ -13,7 +13,6 @@
 // CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 use arithmetic::montgomery::{Encoding, ProductEncoding};
-use core::marker::PhantomData;
 use limb::*;
 
 /// Elements of ℤ/mℤ for some modulus *m*. Elements are always fully reduced
@@ -24,11 +23,11 @@ pub struct Elem<M, E: Encoding> {
     pub limbs: [Limb; MAX_LIMBS],
 
     /// The modulus *m* for the ring ℤ/mℤ for which this element is a value.
-    pub m: PhantomData<M>,
+    pub m: core::marker::PhantomData<M>,
 
     /// The number of Montgomery factors that need to be canceled out from
     /// `value` to get the actual value.
-    pub encoding: PhantomData<E>,
+    pub encoding: core::marker::PhantomData<E>,
 }
 
 impl<M, E: Encoding> Elem<M, E> {
@@ -38,8 +37,8 @@ impl<M, E: Encoding> Elem<M, E> {
     pub fn zero() -> Elem<M, E> {
         Elem {
             limbs: [0; MAX_LIMBS],
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 }
@@ -61,8 +60,8 @@ pub fn binary_op<M, EA: Encoding, EB: Encoding, ER: Encoding>(
         a: &Elem<M, EA>, b: &Elem<M, EB>) -> Elem<M, ER> {
     let mut r = Elem {
         limbs: [0; MAX_LIMBS],
-        m: PhantomData,
-        encoding: PhantomData
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData
     };
     unsafe { f(r.limbs.as_mut_ptr(), a.limbs.as_ptr(), b.limbs.as_ptr()) }
     r
@@ -83,8 +82,8 @@ pub fn unary_op<M, E: Encoding>(
         -> Elem<M, E> {
     let mut r = Elem {
         limbs: [0; MAX_LIMBS],
-        m: PhantomData,
-        encoding: PhantomData,
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData,
     };
     unsafe { f(r.limbs.as_mut_ptr(), a.limbs.as_ptr()) }
     r

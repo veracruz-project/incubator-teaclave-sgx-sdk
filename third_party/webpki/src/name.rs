@@ -12,8 +12,9 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+extern crate std;
 use cert::{Cert, EndEntityOrCA};
-use core;
+//use std::core;
 use {der, Error};
 use untrusted;
 
@@ -104,7 +105,7 @@ impl<'a> DNSNameRef<'a> {
 }
 
 #[cfg(feature = "std")]
-impl<'a> core::fmt::Debug for DNSNameRef<'a> {
+impl<'a> std::fmt::Debug for DNSNameRef<'a> {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> Result<(), core::fmt::Error> {
         let lowercase = self.clone().to_owned();
         f.debug_tuple("DNSNameRef")
@@ -708,7 +709,7 @@ fn presented_dns_id_matches_reference_dns_id_internal(
 #[inline]
 fn ascii_lower(b: u8) -> u8 {
     match b {
-        b'A'...b'Z' => b + b'a' - b'A',
+        b'A'..=b'Z' => b + b'a' - b'A',
         _ => b,
     }
 }
@@ -788,7 +789,7 @@ fn is_valid_dns_id(hostname: untrusted::Input, id_role: IDRole,
                 }
             },
 
-            Ok(b'0'...b'9') => {
+            Ok(b'0'..=b'9') => {
                 if label_length == 0 {
                     label_is_all_numeric = true;
                 }
@@ -799,7 +800,7 @@ fn is_valid_dns_id(hostname: untrusted::Input, id_role: IDRole,
                 }
             },
 
-            Ok(b'a'...b'z') | Ok(b'A'...b'Z') | Ok(b'_') => {
+            Ok(b'a'..=b'z') | Ok(b'A'..=b'Z') | Ok(b'_') => {
                 label_is_all_numeric = false;
                 label_ends_with_hyphen = false;
                 label_length += 1;

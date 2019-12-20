@@ -15,7 +15,6 @@
 //! ECDSA Signatures using the P-256 and P-384 curves.
 
 use arithmetic::montgomery::*;
-use core;
 use {der, digest, ec, error, pkcs8, rand, signature, signature_impl};
 use super::digest_scalar::digest_scalar;
 use ec::suite_b::{ops::*, private_key};

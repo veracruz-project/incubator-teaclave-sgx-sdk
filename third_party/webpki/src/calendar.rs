@@ -15,6 +15,7 @@
 use super::Error;
 use super::time::Time;
 
+#[allow(dead_code)]
 pub fn time_from_ymdhms_utc(year: u64, month: u64, day_of_month: u64,
                             hours: u64, minutes: u64, seconds: u64)
                             -> Result<Time, Error> {
@@ -59,6 +60,7 @@ pub fn time_from_ymdhms_utc(year: u64, month: u64, day_of_month: u64,
     Ok(Time::from_seconds_since_unix_epoch(seconds_since_unix_epoch))
 }
 
+#[allow(dead_code)]
 fn days_before_year_since_unix_epoch(year: u64) -> Result<u64, Error> {
     // We don't support dates before January 1, 1970 because that is the
     // Unix epoch. It is likely that other software won't deal well with
@@ -71,6 +73,7 @@ fn days_before_year_since_unix_epoch(year: u64) -> Result<u64, Error> {
     Ok(days_before_year_ad - DAYS_BEFORE_UNIX_EPOCH_AD)
 }
 
+#[allow(dead_code)]
 fn days_before_year_ad(year: u64) -> u64 {
     ((year - 1) * 365)
         + ((year - 1) / 4)    // leap years are every 4 years,
@@ -78,6 +81,7 @@ fn days_before_year_ad(year: u64) -> u64 {
         + ((year - 1) / 400)  // except years divisible by 400.
 }
 
+#[allow(dead_code)]
 pub fn days_in_month(year: u64, month: u64) -> u64 {
     match month {
         1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
@@ -87,6 +91,7 @@ pub fn days_in_month(year: u64, month: u64) -> u64 {
     }
 }
 
+#[allow(dead_code)]
 fn days_in_feb(year: u64) -> u64 {
     if (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0)) {
         29

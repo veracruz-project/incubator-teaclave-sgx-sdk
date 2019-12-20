@@ -13,8 +13,9 @@
 // OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 // CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+extern crate core;
 use c;
-use core;
+
 use polyfill::slice::u32_from_le_u8;
 
 pub type Key = [u32; KEY_LEN_IN_BYTES / 4];

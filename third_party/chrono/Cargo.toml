@@ -33,7 +33,7 @@ rustc-serialize = { path = "../rustc-serialize", optional = true }
 serde = { path = "../serde-rs/serde/serde", optional = true }
 sgx_untrusted_time = { path = "../time", optional = true }
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"), not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }
 
 [dev-dependencies]

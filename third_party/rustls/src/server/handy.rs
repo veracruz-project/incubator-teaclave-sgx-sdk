@@ -9,7 +9,10 @@ use server;
 use error::TLSError;
 
 use std::collections;
+#[cfg(target_arch="x86_64")]
 use std::sync::{Arc, SgxMutex};
+#[cfg(target_arch="aarch64")]
+use std::sync::{Arc, Mutex};
 
 /// Something which never stores sessions.
 pub struct NoServerSessionStorage {}
@@ -30,7 +33,10 @@ impl server::StoresServerSessions for NoServerSessionStorage {
 /// in memory.  If enforces a limit on the number of stored sessions
 /// to bound memory usage.
 pub struct ServerSessionMemoryCache {
+    #[cfg(target_arch="x86_64")]
     cache: SgxMutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
+    #[cfg(target_arch="aarch64")]
+    cache: Mutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
     max_entries: usize,
 }
 
@@ -40,7 +46,10 @@ impl ServerSessionMemoryCache {
     pub fn new(size: usize) -> Arc<ServerSessionMemoryCache> {
         debug_assert!(size > 0);
         Arc::new(ServerSessionMemoryCache {
+            #[cfg(target_arch="x86_64")]
             cache: SgxMutex::new(collections::HashMap::new()),
+            #[cfg(target_arch="aarch64")]
+            cache: Mutex::new(collections::HashMap::new()),
             max_entries: size,
         })
     }

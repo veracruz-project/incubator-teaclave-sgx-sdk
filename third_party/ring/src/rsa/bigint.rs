@@ -42,10 +42,6 @@
 
 use {bits, bssl, c, error, limb, untrusted};
 use arithmetic::montgomery::*;
-use core;
-use core::marker::PhantomData;
-use core::ops::{Deref, DerefMut};
-use std;
 
 #[cfg(any(test, feature = "rsa_signing"))]
 use constant_time;
@@ -60,7 +56,7 @@ pub struct Width<M> {
     num_limbs: usize,
 
     /// The modulus *m* that the width originated from.
-    m: PhantomData<M>,
+    m: core::marker::PhantomData<M>,
 }
 
 /// All `BoxedLimbs<M>` are stored in the same number of limbs.
@@ -68,10 +64,10 @@ struct BoxedLimbs<M> {
     limbs: std::boxed::Box<[limb::Limb]>,
 
     /// The modulus *m* that determines the size of `limbx`.
-    m: PhantomData<M>,
+    m: core::marker::PhantomData<M>,
 }
 
-impl<M> Deref for BoxedLimbs<M> {
+impl<M> core::ops::Deref for BoxedLimbs<M> {
     type Target = [limb::Limb];
     #[inline]
     fn deref(&self) -> &Self::Target {
@@ -79,7 +75,7 @@ impl<M> Deref for BoxedLimbs<M> {
     }
 }
 
-impl<M> DerefMut for BoxedLimbs<M> {
+impl<M> core::ops::DerefMut for BoxedLimbs<M> {
     #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.limbs
@@ -106,7 +102,7 @@ impl<M> BoxedLimbs<M> {
             return Err(error::Unspecified);
         }
         let num_limbs = (input.len() + limb::LIMB_BYTES - 1) / limb::LIMB_BYTES;
-        let mut r = Self::zero(Width { num_limbs, m: PhantomData });
+        let mut r = Self::zero(Width { num_limbs, m: core::marker::PhantomData });
         limb::parse_big_endian_and_pad_consttime(input, &mut r)?;
         Ok(r)
     }
@@ -114,10 +110,9 @@ impl<M> BoxedLimbs<M> {
     #[cfg(feature = "rsa_signing")]
     fn minimal_width_from_unpadded(limbs: &[limb::Limb]) -> Self {
         debug_assert_ne!(limbs.last(), Some(&0));
-        use std::borrow::ToOwned;
         Self {
             limbs: limbs.to_owned().into_boxed_slice(),
-            m: PhantomData,
+            m: core::marker::PhantomData,
         }
     }
 
@@ -138,17 +133,16 @@ impl<M> BoxedLimbs<M> {
     }
 
     fn zero(width: Width<M>) -> Self {
-        use std::borrow::ToOwned;
         Self {
             limbs: vec![0; width.num_limbs].to_owned().into_boxed_slice(),
-            m: PhantomData,
+            m: core::marker::PhantomData,
         }
     }
 
     fn width(&self) -> Width<M> {
         Width {
             num_limbs: self.limbs.len(),
-            m: PhantomData,
+            m: core::marker::PhantomData,
         }
     }
 }
@@ -215,8 +209,8 @@ pub struct Modulus<M> {
 }
 
 impl core::fmt::Debug for Modulus<super::N> {
-    fn fmt(&self, fmt: &mut ::core::fmt::Formatter)
-           -> Result<(), ::core::fmt::Error> {
+    fn fmt(&self, fmt: &mut core::fmt::Formatter)
+           -> Result<(), core::fmt::Error> {
         fmt.debug_struct("Modulus")
             // TODO: Print modulus value.
             .finish()
@@ -236,7 +230,7 @@ impl<M> Modulus<M> {
     pub fn from(n: Nonnegative) -> Result<Self, error::Unspecified> {
         let limbs = BoxedLimbs {
             limbs: n.limbs.into_boxed_slice(),
-            m: PhantomData,
+            m: core::marker::PhantomData,
         };
         Self::from_boxed_limbs(limbs)
     }
@@ -282,7 +276,7 @@ impl<M> Modulus<M> {
     pub fn zero<E>(&self) -> Elem<M, E> {
         Elem {
             limbs: BoxedLimbs::zero(self.width()),
-            encoding: PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 
@@ -304,9 +298,9 @@ impl<M> Modulus<M> {
         Elem {
             limbs: BoxedLimbs {
                 limbs: limbs.limbs,
-                m: PhantomData,
+                m: core::marker::PhantomData,
             },
-            encoding: PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 }
@@ -328,7 +322,7 @@ pub struct Elem<M, E = Unencoded> {
 
     /// The number of Montgomery factors that need to be canceled out from
     /// `value` to get the actual value.
-    encoding: PhantomData<E>,
+    encoding: core::marker::PhantomData<E>,
 }
 
 // TODO: `derive(Clone)` after https://github.com/rust-lang/rust/issues/26925
@@ -366,7 +360,7 @@ impl<M, E: ReductionEncoding> Elem<M, E> {
         }
         Elem {
             limbs,
-            encoding: PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 }
@@ -383,7 +377,7 @@ impl<M> Elem<M, Unencoded> {
                                 -> Result<Self, error::Unspecified> {
         Ok(Elem {
             limbs: BoxedLimbs::from_be_bytes_padded_less_than(input, m)?,
-            encoding: PhantomData,
+            encoding: core::marker::PhantomData,
         })
     }
 
@@ -429,7 +423,7 @@ pub fn elem_mul<M, AF, BF>(a: &Elem<M, AF>, mut b: Elem<M, BF>, m: &Modulus<M>)
     }
     Elem {
         limbs: b.limbs,
-        encoding: PhantomData,
+        encoding: core::marker::PhantomData,
     }
 }
 
@@ -443,9 +437,9 @@ pub fn elem_reduced_once<Larger, Smaller: SlightlySmallerModulus<Larger>>(
     Elem {
         limbs: BoxedLimbs {
             limbs: r.limbs,
-            m: PhantomData,
+            m: core::marker::PhantomData,
         },
-        encoding: PhantomData,
+        encoding: core::marker::PhantomData,
     }
 }
 
@@ -477,7 +471,7 @@ pub fn elem_squared<M, E>(mut a: Elem<M, E>, m: &Modulus<M>)
     };
     Elem {
         limbs: a.limbs,
-        encoding: PhantomData,
+        encoding: core::marker::PhantomData,
     }
 }
 
@@ -577,7 +571,7 @@ impl<M> One<M, RR> {
 
         One(Elem {
             limbs: RR.limbs,
-            encoding: PhantomData, // PhantomData<RR>
+            encoding: core::marker::PhantomData, // core::marker::PhantomData<RR>
         })
     }
 }
@@ -741,7 +735,7 @@ pub fn elem_exp_consttime<M>(
         m: &Modulus<M>) -> Result<Elem<M, Unencoded>, error::Unspecified> {
     let mut r = Elem {
         limbs: base.limbs,
-        encoding: PhantomData,
+        encoding: core::marker::PhantomData,
     };
     bssl::map_result(unsafe {
         GFp_BN_mod_exp_mont_consttime(r.limbs.as_mut_ptr(), r.limbs.as_ptr(),
@@ -1100,7 +1094,7 @@ mod tests {
     fn consume_elem_unchecked<M>(test_case: &mut test::TestCase, name: &str,
                                  num_limbs: usize) -> Elem<M, Unencoded> {
         let value = consume_nonnegative(test_case, name);
-        let mut limbs = BoxedLimbs::zero(Width { num_limbs, m: PhantomData });
+        let mut limbs = BoxedLimbs::zero(Width { num_limbs, m: core::marker::PhantomData });
         limbs[0..value.limbs.len()].copy_from_slice(&value.limbs);
         Elem {
             limbs,

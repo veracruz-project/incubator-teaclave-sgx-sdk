@@ -5,7 +5,10 @@ use key;
 use client;
 
 use std::collections;
+#[cfg(target_arch="x86_64")]
 use std::sync::{Arc, SgxMutex};
+#[cfg(target_arch="aarch64")]
+use std::sync::{Arc, Mutex};
 
 /// An implementor of `StoresClientSessions` which does nothing.
 pub struct NoClientSessionStorage {}
@@ -24,7 +27,10 @@ impl client::StoresClientSessions for NoClientSessionStorage {
 /// in memory.  It enforces a limit on the number of entries
 /// to bound memory usage.
 pub struct ClientSessionMemoryCache {
-    cache: SgxMutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
+    #[cfg(target_arch="x86_64")]
+    cache: std::sync::SgxMutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
+    #[cfg(target_arch="aarch64")]
+    cache: Mutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
     max_entries: usize,
 }
 
@@ -34,7 +40,10 @@ impl ClientSessionMemoryCache {
     pub fn new(size: usize) -> Arc<ClientSessionMemoryCache> {
         debug_assert!(size > 0);
         Arc::new(ClientSessionMemoryCache {
-            cache: SgxMutex::new(collections::HashMap::new()),
+            #[cfg(target_arch="x86_64")]
+            cache: std::sync::SgxMutex::new(collections::HashMap::new()),
+            #[cfg(target_arch="aarch64")]
+            cache: std::sync::Mutex::new(collections::HashMap::new()),
             max_entries: size,
         })
     }

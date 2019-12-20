@@ -14,7 +14,7 @@
 
 #[inline(always)]
 pub fn init_once() {
-    #[cfg(not(target_os = "ios"))]
+    #[cfg(all(not(target_os = "ios"),not(target_os="optee")))]
     {
         extern { fn GFp_cpuid_setup(); }
         static INIT: std::sync::Once = std::sync::ONCE_INIT;

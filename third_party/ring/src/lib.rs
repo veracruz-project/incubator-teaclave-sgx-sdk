@@ -50,7 +50,6 @@
     missing_docs,
     trivial_numeric_casts,
     //unstable_features, // Used by `internal_benches`
-    unused_qualifications,
 )]
 
 #![forbid(
@@ -60,10 +59,9 @@
     unused_import_braces,
     unused_results,
     variant_size_differences,
-    warnings,
 )]
 
-#![no_std]
+#![cfg_attr(not(target_arch = "aarch64"), no_std)]
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
 
 #![cfg_attr(feature = "internal_benches", allow(unstable_features))]
@@ -83,7 +81,7 @@ extern crate test as bench;
 #[macro_use]
 extern crate lazy_static;
 
-#[cfg(not(target_env = "sgx"))]
+#[cfg(all(not(target_env = "sgx"), not(target_arch="aarch64")))]
 #[macro_use]
 extern crate sgx_tstd as std;
 
@@ -95,6 +93,10 @@ mod debug;
 #[macro_use]
 extern crate std;
 
+#[cfg(all(target_arch = "aarch64", not(target_os="optee")))]
+extern crate libc;
+
+#[cfg(target_arch = "x86_64")]
 extern crate sgx_rand;
 
 extern crate untrusted;
@@ -138,8 +140,8 @@ mod rsa;
 pub mod signature;
 mod signature_impl;
 
-#[cfg(any(feature = "use_heap", test))]
-pub mod test;
+//#[cfg(any(feature = "use_heap", test))]
+//pub mod test;
 
 mod private {
     /// Traits that are designed to only be implemented internally in *ring*.

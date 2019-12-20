@@ -14,8 +14,7 @@
 
 //! Polyfills for functionality that will (hopefully) be added to Rust's
 //! standard library soon.
-
-use core;
+extern crate core;
 
 // A better name for the `&*` idiom for removing the mutability from a
 // reference.
@@ -37,7 +36,6 @@ pub fn wrapping_rotate_left_u32(x: core::num::Wrapping<u32>, n: u32)
 
 
 pub mod slice {
-    use core;
 
     #[inline(always)]
     pub fn u32_from_be_u8(buffer: &[u8; 4]) -> u32 {

@@ -12,5 +12,5 @@ repository = "http://github.com/tailhook/quick-error"
 documentation = "http://docs.rs/quick-error"
 categories = ["rust-patterns"]
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx") not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }

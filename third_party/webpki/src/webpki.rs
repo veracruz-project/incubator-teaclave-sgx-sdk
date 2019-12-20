@@ -21,7 +21,7 @@
 
 #![doc(html_root_url="https://briansmith.org/rustdoc/")]
 
-#![no_std]
+#![cfg_attr(not(target_arch="aarch64"),no_std)]
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
 
 #![allow(
@@ -29,9 +29,9 @@
 )]
 
 // `#[derive(...)]` uses `#[allow(unused_qualifications)]` internally.
-#![deny(
-    unused_qualifications,
-)]
+//#![deny(
+    //unused_qualifications,
+//)]
 
 #![forbid(
     anonymous_parameters,
@@ -42,14 +42,12 @@
     trivial_numeric_casts,
     unsafe_code,
 //    unstable_features,
-    unused_extern_crates,
     unused_import_braces,
     unused_results,
     variant_size_differences,
-    warnings,
 )]
 
-#[cfg(all(any(test, feature = "trust_anchor_util"), not(target_env = "sgx")))]
+#[cfg(all(not(target_arch="aarch64"),any(test, feature = "trust_anchor_util"), not(target_env = "sgx")))]
 #[macro_use(format)]
 extern crate sgx_tstd as std;
 
@@ -58,6 +56,9 @@ extern crate sgx_tstd as std;
 extern crate std;
 
 extern crate ring;
+
+#[cfg(target_os="optee")]
+extern crate optee_utee;
 
 #[cfg(test)]
 extern crate base64;

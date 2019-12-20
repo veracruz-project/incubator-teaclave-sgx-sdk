@@ -16,7 +16,7 @@ Limitation: **only** supports UTC timezone.
 [dependencies]
 rustc-serialize = { version = "0.3", optional = true }
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"),  not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }
 sgx_trts = { path =  "../../sgx_trts" }
 

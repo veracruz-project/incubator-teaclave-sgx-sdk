@@ -14,7 +14,6 @@
 
 /// RSA PKCS#1 1.5 signatures.
 
-use core;
 use {bits, digest, error, private, signature};
 use super::{bigint, N, PUBLIC_KEY_PUBLIC_MODULUS_MAX_LEN, RSAParameters,
             parse_public_key};

@@ -11,9 +11,9 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
 // OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 // CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+extern crate core;
 
 use arithmetic::montgomery::*;
-use core::marker::PhantomData;
 use {c, error};
 use untrusted;
 
@@ -76,8 +76,8 @@ macro_rules! limbs {
 
 static ONE: Elem<Unencoded> = Elem {
     limbs: limbs![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    m: PhantomData,
-    encoding: PhantomData,
+    m: core::marker::PhantomData,
+    encoding: core::marker::PhantomData,
 };
 
 
@@ -311,8 +311,8 @@ impl PublicScalarOps {
     pub fn scalar_as_elem(&self, a: &Scalar) -> Elem<Unencoded> {
         Elem {
             limbs: a.limbs,
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 
@@ -356,8 +356,8 @@ pub fn elem_reduced_to_scalar(ops: &CommonOps, elem: &Elem<Unencoded>)
                                     &ops.n.limbs[..num_limbs]);
     Scalar {
         limbs: r_limbs,
-        m: PhantomData,
-        encoding: PhantomData,
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData,
     }
 }
 
@@ -458,8 +458,8 @@ mod tests {
 
     const ZERO_SCALAR: Scalar = Scalar {
         limbs: [0; MAX_LIMBS],
-        m: PhantomData,
-        encoding: PhantomData,
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData,
     };
 
     fn q_minus_n_plus_n_equals_0_test(ops: &PublicScalarOps) {
@@ -715,8 +715,8 @@ mod tests {
             {
                 let mut actual_result: Scalar<R> = Scalar {
                     limbs: [0; MAX_LIMBS],
-                    m: PhantomData,
-                    encoding: PhantomData,
+                    m: core::marker::PhantomData,
+                    encoding: core::marker::PhantomData,
                 };
                 unsafe {
                     sqr_rep(actual_result.limbs.as_mut_ptr(), a.limbs.as_ptr(), 1);
@@ -1037,8 +1037,8 @@ mod tests {
             // XXX: “Transmute” this to `Elem<R>` limbs.
             Elem {
                 limbs: unencoded.limbs,
-                m: PhantomData,
-                encoding: PhantomData,
+                m: core::marker::PhantomData,
+                encoding: core::marker::PhantomData,
             }
         }
 
@@ -1082,8 +1082,8 @@ mod tests {
         // XXX: “Transmute” this to an `Elem<R>`.
         Elem {
             limbs: r.limbs,
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 
@@ -1103,8 +1103,8 @@ mod tests {
         // “Transmute” it to a `Scalar<R>`.
         Scalar {
             limbs: s.limbs,
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         }
     }
 

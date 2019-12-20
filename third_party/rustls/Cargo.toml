@@ -9,7 +9,7 @@ homepage = "https://github.com/ctz/rustls"
 repository = "https://github.com/ctz/rustls"
 categories = ["network-programming", "cryptography"]
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"), not(target_arch = "aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }
 
 [dependencies]
@@ -19,6 +19,9 @@ log = { path = "../log", optional = true }
 ring = { path = "../ring", version = "0.13.2", features = ["rsa_signing"] }
 webpki = { path = "../webpki", version = "0.18.1" }
 sct = { path = "../sct" }
+
+[target.'cfg(target_os="optee")'.dependencies]
+optee-utee = { path = "/work/rust-optee-trustzone-sdk/optee-utee" }
 
 [features]
 default = ["logging"]

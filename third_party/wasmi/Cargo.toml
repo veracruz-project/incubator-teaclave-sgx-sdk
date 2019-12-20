@@ -18,5 +18,5 @@ nan-preserving-float    = { version = "0.1.0", path = "../nan-preserving-float" 
 serde                   = { path = "../serde-rs/serde/serde" }
 serde_derive            = { path = "../serde-rs/serde/serde_derive" }
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx") not(target_arch="aarch64")))'.dependencies]
 sgx_tstd = { path =  "../../sgx_tstd" }

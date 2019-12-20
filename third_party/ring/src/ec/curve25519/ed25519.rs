@@ -14,7 +14,7 @@
 
 //! EdDSA Signatures.
 
-use core;
+extern crate core;
 use {der, digest, error, pkcs8, private, rand, signature, signature_impl};
 use super::ops::*;
 use untrusted;

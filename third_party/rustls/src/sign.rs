@@ -13,6 +13,7 @@ use webpki;
 
 use std::sync::Arc;
 use std::mem;
+use std::boxed::Box;
 
 /// An abstract signing key.
 pub trait SigningKey : Send + Sync {

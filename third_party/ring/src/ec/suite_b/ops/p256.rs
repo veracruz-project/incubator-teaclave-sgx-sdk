@@ -11,9 +11,8 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
 // OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
 // CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
+extern crate core;
 use c;
-use core::marker::PhantomData;
 use super::*;
 use super::{Mont, elem_sqr_mul, elem_sqr_mul_acc};
 use super::elem::{binary_op, binary_op_assign};
@@ -41,21 +40,21 @@ pub static COMMON_OPS: CommonOps = CommonOps {
     n: Elem {
         limbs: p256_limbs![0xffffffff, 0x00000000, 0xffffffff, 0xffffffff,
                            0xbce6faad, 0xa7179e84, 0xf3b9cac2, 0xfc632551],
-        m: PhantomData,
-        encoding: PhantomData, // Unencoded
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData, // Unencoded
     },
 
     a: Elem {
         limbs: p256_limbs![0xfffffffc, 0x00000004, 0x00000000, 0x00000000,
                            0x00000003, 0xffffffff, 0xffffffff, 0xfffffffc],
-        m: PhantomData,
-        encoding: PhantomData, // R
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData, // R
     },
     b: Elem {
         limbs: p256_limbs![0xdc30061d, 0x04874834, 0xe5a220ab, 0xf7212ed6,
                            0xacf005cd, 0x78843090, 0xd89cdf62, 0x29c4bddf],
-        m: PhantomData,
-        encoding: PhantomData, // R
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData, // R
     },
 
     elem_add_impl: GFp_nistz256_add,
@@ -144,8 +143,8 @@ pub static PUBLIC_SCALAR_OPS: PublicScalarOps = PublicScalarOps {
     q_minus_n: Elem {
         limbs: p256_limbs![0, 0, 0, 0, 0x43190553, 0x58e8617b, 0x0c46353d,
                            0x039cdaae],
-        m: PhantomData,
-        encoding: PhantomData, // Unencoded
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData, // Unencoded
     },
 };
 
@@ -155,8 +154,8 @@ pub static PRIVATE_SCALAR_OPS: PrivateScalarOps = PrivateScalarOps {
     oneRR_mod_n: Scalar {
         limbs: p256_limbs![0x66e12d94, 0xf3d95620, 0x2845b239, 0x2b6bec59,
                            0x4699799c, 0x49bd6fa6, 0x83244c95, 0xbe79eea2],
-        m: PhantomData,
-        encoding: PhantomData, // R
+        m: core::marker::PhantomData,
+        encoding: core::marker::PhantomData, // R
     },
 };
 
@@ -205,8 +204,8 @@ fn p256_scalar_inv_to_mont(a: &Scalar<Unencoded>) -> Scalar<R> {
         static N_RR: Scalar<Unencoded> = Scalar {
             limbs: p256_limbs![0x66e12d94, 0xf3d95620, 0x2845b239, 0x2b6bec59,
                                0x4699799c, 0x49bd6fa6, 0x83244c95, 0xbe79eea2],
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         };
         binary_op(GFp_p256_scalar_mul_mont, a, &N_RR)
     }
@@ -327,20 +326,20 @@ mod internal_benches {
     bench_curve!(&[
         Scalar {
             limbs: LIMBS_1,
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         },
         Scalar {
             limbs: LIMBS_ALTERNATING_10,
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         },
         Scalar { // n - 1
             limbs: p256_limbs![0xffffffff, 0x00000000, 0xffffffff, 0xffffffff,
                                0xbce6faad, 0xa7179e84, 0xf3b9cac2,
                                0xfc632551 - 1],
-            m: PhantomData,
-            encoding: PhantomData,
+            m: core::marker::PhantomData,
+            encoding: core::marker::PhantomData,
         },
     ]);
 }
