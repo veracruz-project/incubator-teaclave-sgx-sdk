@@ -1816,10 +1816,10 @@ where
 
 forwarded_impl!((T), RefCell<T>, RefCell::new);
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", target_arch = "x86_64"))]
 forwarded_impl!((T), SgxMutex<T>, SgxMutex::new);
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", target_arch = "x86_64"))]
 forwarded_impl!((T), SgxRwLock<T>, SgxRwLock::new);
 
 ////////////////////////////////////////////////////////////////////////////////

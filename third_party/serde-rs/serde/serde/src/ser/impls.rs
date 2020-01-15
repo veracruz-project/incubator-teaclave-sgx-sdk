@@ -499,7 +499,7 @@ where
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", target_arch = "x86_64"))]
 impl<T> Serialize for SgxMutex<T>
 where
     T: Serialize,
@@ -515,7 +515,7 @@ where
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", target_arch = "x86_64"))]
 impl<T> Serialize for SgxRwLock<T>
 where
     T: Serialize,

@@ -46,7 +46,7 @@ assert_eq!(wtr, vec![5, 2, 0, 3]);
 #[cfg(all(not(target_env = "sgx"), feature = "std", not(target_arch = "aarch64")))]
 extern crate sgx_tstd as std;
 
-//#[cfg(all(target_env = "sgx", feature = "std"))]
+#[cfg(any(all(target_env = "sgx", feature = "std"), target_arch="aarch64"))]
 extern crate core;
 
 use core::fmt::Debug;

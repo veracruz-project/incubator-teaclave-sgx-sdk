@@ -288,8 +288,8 @@ lazy_static = { version = "1.1.0", features = ["spin_no_std"] }
 [target.'cfg(target_os = "optee")'.dependencies]
 optee-utee = { path = "/work/rust-optee-trustzone-sdk/optee-utee" }
 
-[target.'cfg(any(target_os = "android", target_os = "linux"))'.dependencies]
-libc = { version = "0.2.48", default-features = false }
+#[target.'cfg(any(target_os = "android", target_os = "linux"))'.dependencies]
+#libc = { version = "0.2.48", default-features = false }
 
 # Keep this in sync with `[dependencies]` in pregenerate_asm/Cargo.toml.
 [build-dependencies]

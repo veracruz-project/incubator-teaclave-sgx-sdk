@@ -28,10 +28,12 @@
 
 //use sync::SgxThreadMutex;
 use sync::SgxThreadSpinlock;
-use alloc::boxed::{Box, FnBox};
+use alloc::boxed::Box;
+use ops::FnOnce;
 use core::ptr;
 
-type Queue = Vec<Box<FnBox()>>;
+//type Queue = Vec<Box<dyn std::ops::FnOnce()>>;
+type Queue = Vec<Box<dyn FnOnce()>>;
 
 // NB these are specifically not types from `std::sync` as they currently rely
 // on poisoning and this module needs to operate at a lower level than requiring
@@ -81,7 +83,8 @@ pub fn cleanup() {
     }
 }
 
-pub fn push(f: Box<FnBox()>) -> bool {
+pub fn push(f: Box<dyn FnOnce()>) -> bool {
+//pub fn push(f: Box<dyn std::ops::FnOnce()>) -> bool {
     let mut ret = true;
     unsafe {
         LOCK.lock();

@@ -135,10 +135,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#![cfg_attr(not(target_env = "sgx"), no_std)]
+#![cfg_attr(all(not(target_env = "sgx"), target_arch = "x86_64"), no_std)]
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
 
-#[cfg(not(target_env = "sgx"))]
+#[cfg(all(not(target_env = "sgx"), target_arch = "x86_64"))]
 #[macro_use]
 extern crate sgx_tstd as std;
 
@@ -221,7 +221,7 @@ mod lib {
     pub use std::num::Wrapping;
     #[cfg(feature = "std")]
     pub use std::path::{Path, PathBuf};
-    #[cfg(feature = "std")]
+    #[cfg(all(feature = "std", target_arch = "x86_64"))]
     pub use std::sync::{SgxMutex, SgxRwLock};
     #[cfg(feature = "std")]
     pub use std::time::{SystemTime, UNIX_EPOCH};

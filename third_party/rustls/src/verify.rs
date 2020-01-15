@@ -4,7 +4,9 @@ use untrusted;
 use sct;
 use std;
 use std::sync::Arc;
-//use std::untrusted::time::SystemTimeEx;
+
+#[cfg(not(target_arch = "aarch64"))]
+use std::untrusted::time::SystemTimeEx;
 
 use key::Certificate;
 use msgs::handshake::DigitallySignedStruct;

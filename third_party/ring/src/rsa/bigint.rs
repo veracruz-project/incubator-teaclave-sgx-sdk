@@ -46,6 +46,8 @@ use arithmetic::montgomery::*;
 #[cfg(any(test, feature = "rsa_signing"))]
 use constant_time;
 
+use std::borrow::ToOwned;
+
 pub unsafe trait Prime {}
 
 pub trait IsOne {

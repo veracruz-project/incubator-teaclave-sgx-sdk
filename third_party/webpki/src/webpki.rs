@@ -51,9 +51,9 @@
 #[macro_use(format)]
 extern crate sgx_tstd as std;
 
-#[cfg(all(any(test, feature = "trust_anchor_util"), target_env = "sgx"))]
-#[macro_use(format)]
-extern crate std;
+//#[cfg(all(any(test, feature = "trust_anchor_util"), target_env = "sgx"))]
+//#[macro_use(format)]
+//extern crate std;
 
 extern crate ring;
 

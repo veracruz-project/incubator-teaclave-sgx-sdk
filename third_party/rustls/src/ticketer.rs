@@ -1,5 +1,7 @@
 use std::prelude::v1::*;
-//use std::untrusted::time::SystemTimeEx;
+#[cfg(not(target_arch = "aarch64"))]
+use std::untrusted::time::SystemTimeEx;
+
 use server::ProducesTickets;
 use rand;
 
@@ -119,7 +121,7 @@ pub struct TicketSwitcher {
     generator: fn() -> Box<ProducesTickets>,
     lifetime: u32,
     #[cfg(target_arch="x86_64")]
-    state: std::sync::SgxMutex<TicketSwitcherState>,
+    state: SgxMutex<TicketSwitcherState>,
     #[cfg(target_arch="aarch64")]
     state: Mutex<TicketSwitcherState>,
 

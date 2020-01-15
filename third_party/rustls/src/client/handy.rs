@@ -28,7 +28,7 @@ impl client::StoresClientSessions for NoClientSessionStorage {
 /// to bound memory usage.
 pub struct ClientSessionMemoryCache {
     #[cfg(target_arch="x86_64")]
-    cache: std::sync::SgxMutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
+    cache: SgxMutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
     #[cfg(target_arch="aarch64")]
     cache: Mutex<collections::HashMap<Vec<u8>, Vec<u8>>>,
     max_entries: usize,

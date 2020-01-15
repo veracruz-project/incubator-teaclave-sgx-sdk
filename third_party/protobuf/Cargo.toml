@@ -21,5 +21,5 @@ with-bytes = ["bytes"]
 [dependencies]
 bytes = { version = "0.*", path = "../bytes", optional = true }
 
-[target.'cfg(all(not(target_env = "sgx"), not(target_arch="aarch64")))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"), target_arch="x86_64"))'.dependencies]
 sgx_tstd = { path = "../../sgx_tstd" }

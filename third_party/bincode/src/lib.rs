@@ -36,10 +36,10 @@
 #![crate_type = "rlib"]
 #![crate_type = "dylib"]
 
-#![cfg_attr(not(target_env = "sgx"), no_std)]
+#![cfg_attr(all(not(target_env = "sgx"), target_arch = "x86_64"), no_std)]
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
 
-#[cfg(not(target_env = "sgx"))]
+#[cfg(all(not(target_env = "sgx"), target_arch = "x86_64"))]
 #[macro_use]
 extern crate sgx_tstd as std;
 

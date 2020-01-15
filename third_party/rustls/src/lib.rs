@@ -227,7 +227,7 @@ extern crate sct;
 // rust-base64 for pemfile module.
 extern crate base64;
 
-#[cfg(taret_os="optee")]
+#[cfg(target_os="optee")]
 extern crate optee_utee;
 
 // log for logging (optional).

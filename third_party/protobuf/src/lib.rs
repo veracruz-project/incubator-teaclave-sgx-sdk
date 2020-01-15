@@ -4,7 +4,7 @@
 //#![deny(missing_docs)]
 
 #![crate_type = "lib"]
-#![no_std]
+#![cfg_attr(all(not(target_env = "sgx"), target_arch = "x86_64"), no_std)]
 #![feature(slice_concat_ext)]
 
 #![cfg_attr(target_env = "sgx", feature(rustc_private))]
@@ -12,7 +12,7 @@
 #[cfg(feature = "bytes")]
 extern crate bytes;
 
-#[cfg(not(target_env = "sgx"))]
+#[cfg(all(not(target_env = "sgx"), target_arch = "x86_64"))]
 #[macro_use]
 extern crate sgx_tstd as std;
 

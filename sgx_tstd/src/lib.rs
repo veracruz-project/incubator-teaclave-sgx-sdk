@@ -66,7 +66,7 @@
 #![feature(fixed_size_array)]
 #![feature(dropck_eyepatch)]
 #![feature(fn_traits)]
-#![feature(fnbox)]
+//#![feature(fnbox)]
 #![feature(int_error_internals)]
 #![feature(hashmap_internals)]
 #![feature(lang_items)]

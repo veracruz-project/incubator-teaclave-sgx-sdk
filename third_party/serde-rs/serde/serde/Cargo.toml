@@ -17,7 +17,7 @@ build = "build.rs"
 travis-ci = { repository = "serde-rs/serde" }
 appveyor = { repository = "serde-rs/serde" }
 
-[target.'cfg(not(target_env = "sgx"))'.dependencies]
+[target.'cfg(all(not(target_env = "sgx"), target_arch = "x86_64"))'.dependencies]
 sgx_tstd = { path =  "../../../../sgx_tstd" }
 
 [dependencies]
