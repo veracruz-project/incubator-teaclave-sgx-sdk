@@ -111,7 +111,7 @@ impl<T: Clone> Clone for AlignBox<T> {
                                      self.origin_layout.size());
         }
         AlignBox {
-            ptr: ptr.cast().into(),
+            ptr: unsafe { ptr.cast::<T>().as_mut().into() },
             align_layout: self.align_layout,
             origin_layout: self.origin_layout,
         }
@@ -132,7 +132,7 @@ impl<T: Clone> Clone for AlignBox<T> {
                                          source.origin_layout.size());
                 self.dealloc_buffer();
             }
-            self.ptr = ptr.cast().into();
+            self.ptr = unsafe{ ptr.cast::<T>().as_mut().into() };
         } else {
             (**self).clone_from(&(**source));
         }
@@ -198,13 +198,13 @@ impl<T> AlignBox<T> {
         } else {
             unsafe{ AlignAlloc.alloc_with_req(layout, align_req) }
         };
-        let ptr = match result {
+        let mut ptr : NonNull<T> = match result {
             Ok(r) => r.cast(),
             Err(_) => handle_alloc_error(align_layout),
         };
 
         Some(AlignBox{
-            ptr: ptr.into(),
+            ptr: unsafe{ ptr.as_mut().into() },
             align_layout: align_layout,
             origin_layout: layout,
         })
