@@ -255,6 +255,8 @@ pub struct SgxMutex<T: ?Sized> {
     data: UnsafeCell<T>,
 }
 
+pub type Mutex<T: ?Sized> = SgxMutex<T>;
+
 // these are the only places where `T: Send` matters; all other
 // functionality works fine on a single thread.
 unsafe impl<T: ?Sized + Send> Send for SgxMutex<T> {}
@@ -279,6 +281,8 @@ pub struct SgxMutexGuard<'a, T: ?Sized + 'a> {
     lock: &'a SgxMutex<T>,
     poison: poison::Guard,
 }
+
+pub type MutexGuard<'a, T: ?Sized + 'a> = SgxMutexGuard<'a, T>;
 
 impl<T: ?Sized> !Send for SgxMutexGuard<'_, T> {}
 unsafe impl<T: ?Sized + Sync> Sync for SgxMutexGuard<'_, T> {}
